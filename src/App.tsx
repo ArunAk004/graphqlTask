@@ -65,7 +65,7 @@ function App() {
       <GlobalStyle />
 
       <Grid container justifyContent="center">
-        <Grid item lg={8}>
+        <Grid item lg={8} xs={12}>
           <CustomTableComponent
             columns={[
               {

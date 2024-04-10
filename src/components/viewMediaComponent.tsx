@@ -88,7 +88,7 @@ export default function ViewMediaComponent(props: IViewMediaComponent) {
 
             <DetailsSection>
               <Grid container spacing={3}>
-                <Grid item lg={5}>
+                <Grid item lg={5} xs={12}>
                   <MediaCoverImg>
                     <img src={coverImage.large} alt={title.userPreferred} />
                   </MediaCoverImg>

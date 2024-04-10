@@ -38,20 +38,29 @@ table{
 `
 
 export const ShowPerPage = styled.div`
-   select{
-    border-radius:10px;
-    padding:10px;
-    border:1px solid #888888;
-    margin:0px 10px;
-   }
+  font-size: 14px;
+  padding-bottom: 15px;
+  select {
+    border-radius: 10px;
+    padding: 5px 10px;
+    border: 1px solid #888888;
+    margin: 0px 10px;
+  }
 `
 
 export const SearchBar = styled.div`
-   input{
-    border-radius:10px;
-    padding:10px;
-    border:1px solid #888888;
-   }
+  padding-bottom: 15px;
+  input {
+    border-radius: 10px;
+    padding: 5px 10px;
+    border: 1px solid #888888;
+  }
+  @media screen and (max-width: 480px) {
+    width:300px;
+    input {
+        width:100%;
+    }
+  }
 `
 
 export const DetailContainer = styled.div`
@@ -107,3 +116,8 @@ export const TagSection = styled.div`
   }
 `
 export const DetailsLoader = styled.div``
+
+export const TableStyle = styled.div`
+  width: 100%;
+  overflow-x: auto;
+`

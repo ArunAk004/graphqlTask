@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table"
 import { Box, Pagination } from "@mui/material"
 import { IChangeEvent, IListPayload } from "../interface"
-import { SearchBar, ShowPerPage } from "../assets/style"
+import { SearchBar, ShowPerPage, TableStyle } from "../assets/style"
 
 interface ICustomTableProps {
   columns: any
@@ -79,7 +79,7 @@ export default function CustomTableComponent(props: ICustomTableProps) {
 
   return (
     <>
-      <Box display="flex" py={3} justifyContent="space-between">
+      <Box display="flex" flexDirection={{xs:"column", lg:"row"}} pt={3} pb={2} justifyContent="space-between" alignItems={{xs:"center"}}>
         <ShowPerPage>
           Show
           <select name="perPage" onChange={changeHandler}>
@@ -97,66 +97,67 @@ export default function CustomTableComponent(props: ICustomTableProps) {
           <input type="text" placeholder="Search..." name="search" value={search} onChange={changeHandler} />
         </SearchBar>
       </Box>
-
-      <table>
-        <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => {
-                return (
-                  <th key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder ? null : (
-                      <div
-                        className={header.column.getCanSort() ? "cursor-pointer select-none" : ""}
-                        onClick={header.column.getToggleSortingHandler()}
-                        title={
-                          header.column.getCanSort()
-                            ? header.column.getNextSortingOrder() === "asc"
-                              ? "Sort ascending"
-                              : header.column.getNextSortingOrder() === "desc"
-                              ? "Sort descending"
-                              : "Clear sort"
-                            : undefined
-                        }
-                      >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {{
-                          asc: " 🔼",
-                          desc: " 🔽",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                    )}
-                  </th>
-                )
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {loader ? (
-            <tr>
-              <td className="table_min_height_section" colSpan={table.getHeaderGroups()[0].headers.length}>
-                <div className="table_loader">
-                  <div className="loader_content">
-                    <span className="tableloader"></span>
-                    <p>Loading...</p>
+      <TableStyle>
+        <table>
+          <thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => {
+                  return (
+                    <th key={header.id} colSpan={header.colSpan}>
+                      {header.isPlaceholder ? null : (
+                        <div
+                          className={header.column.getCanSort() ? "cursor-pointer select-none" : ""}
+                          onClick={header.column.getToggleSortingHandler()}
+                          title={
+                            header.column.getCanSort()
+                              ? header.column.getNextSortingOrder() === "asc"
+                                ? "Sort ascending"
+                                : header.column.getNextSortingOrder() === "desc"
+                                ? "Sort descending"
+                                : "Clear sort"
+                              : undefined
+                          }
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {{
+                            asc: " 🔼",
+                            desc: " 🔽",
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                      )}
+                    </th>
+                  )
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {loader ? (
+              <tr>
+                <td className="table_min_height_section" colSpan={table.getHeaderGroups()[0].headers.length}>
+                  <div className="table_loader">
+                    <div className="loader_content">
+                      <span className="tableloader"></span>
+                      <p>Loading...</p>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          ) : (
-            table.getRowModel().rows.map(row => {
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map(cell => {
-                    return <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-                  })}
-                </tr>
-              )
-            })
-          )}
-        </tbody>
-      </table>
+                </td>
+              </tr>
+            ) : (
+              table.getRowModel().rows.map(row => {
+                return (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map(cell => {
+                      return <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                    })}
+                  </tr>
+                )
+              })
+            )}
+          </tbody>
+        </table>
+      </TableStyle>
 
       <Box p={3} display="flex" justifyContent="flex-end">
         <Pagination count={Math.ceil(totalItemCount / perPage)} shape="rounded" onChange={handlePagination} />
