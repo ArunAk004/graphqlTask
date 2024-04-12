@@ -66,12 +66,13 @@ function App() {
 
       <Grid container justifyContent="center">
         <Grid item lg={8} xs={12}>
+
           <CustomTableComponent
             columns={[
               {
                 accessorKey: "poster",
                 header: "Poster",
-                cell: (info: any) => <img src={info.row.original.poster} alt={info.row.original.title} />,
+                cell: (info: any) => <img className="poster" src={info.row.original.poster} alt={info.row.original.title} />,
               },
               ,
               ...mediaTableColumn,

@@ -9,8 +9,10 @@ import {
 } from "@tanstack/react-table"
 import { Box, Pagination } from "@mui/material"
 import { IChangeEvent, IListPayload } from "../interface"
-import { SearchBar, ShowPerPage, TableStyle } from "../assets/style"
-
+import { Filters, Loader, SearchBar, ShowPerPage, TableStyle } from "../assets/style"
+import arrowDown from "../assets/img/arrowDown.svg"
+import arrowUp from "../assets/img/arrowUp.svg"
+import empty_item from "../assets/img/empty_item.svg"
 interface ICustomTableProps {
   columns: any
   data: any[]
@@ -43,6 +45,7 @@ export default function CustomTableComponent(props: ICustomTableProps) {
     state: {
       sorting,
     },
+    enableSorting: true,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -76,10 +79,17 @@ export default function CustomTableComponent(props: ICustomTableProps) {
 
     return () => clearTimeout(timer)
   }, [search, perPage, page])
-
+  
   return (
     <>
-      <Box display="flex" flexDirection={{xs:"column", lg:"row"}} pt={3} pb={2} justifyContent="space-between" alignItems={{xs:"center"}}>
+      <Box
+        display="flex"
+        flexDirection={{ xs: "column", lg: "row" }}
+        pt={3}
+        pb={2}
+        justifyContent="space-between"
+        alignItems={{ xs: "center" }}
+      >
         <ShowPerPage>
           Show
           <select name="perPage" onChange={changeHandler}>
@@ -93,9 +103,11 @@ export default function CustomTableComponent(props: ICustomTableProps) {
           </select>
           per page
         </ShowPerPage>
-        <SearchBar>
-          <input type="text" placeholder="Search..." name="search" value={search} onChange={changeHandler} />
-        </SearchBar>
+        <Filters>
+          <SearchBar>
+            <input type="text" placeholder="Search..." name="search" value={search} onChange={changeHandler} />
+          </SearchBar>
+        </Filters>
       </Box>
       <TableStyle>
         <table>
@@ -119,11 +131,28 @@ export default function CustomTableComponent(props: ICustomTableProps) {
                               : undefined
                           }
                         >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {{
-                            asc: " 🔼",
-                            desc: " 🔽",
-                          }[header.column.getIsSorted() as string] ?? null}
+                          <div className="header_text_style">
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            <div className="columnSort">
+                              {{
+                                asc: (
+                                  <div className="arrows">
+                                    <img src={arrowUp} alt="up" />
+                                  </div>
+                                ),
+                                desc: (
+                                  <div className="arrows">
+                                    <img src={arrowDown} alt="down" />
+                                  </div>
+                                ),
+                              }[header.column.getIsSorted() as string] ?? (
+                                <div className="arrows two">
+                                  <img src={arrowUp} alt="up" />
+                                  <img src={arrowDown} alt="down" />
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       )}
                     </th>
@@ -138,13 +167,13 @@ export default function CustomTableComponent(props: ICustomTableProps) {
                 <td className="table_min_height_section" colSpan={table.getHeaderGroups()[0].headers.length}>
                   <div className="table_loader">
                     <div className="loader_content">
-                      <span className="tableloader"></span>
+                      <Loader />
                       <p>Loading...</p>
                     </div>
                   </div>
                 </td>
               </tr>
-            ) : (
+            ) : table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map(row => {
                 return (
                   <tr key={row.id}>
@@ -154,6 +183,17 @@ export default function CustomTableComponent(props: ICustomTableProps) {
                   </tr>
                 )
               })
+            ) : (
+              <tr>
+                <td className="table_min_height_section" colSpan={table.getHeaderGroups()[0].headers.length}>
+                  <div className="table_loader">
+                    <div className="loader_content">
+                      <img className="empty_image" src={empty_item} alt="empty" />
+                      <p>No Record Found</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
