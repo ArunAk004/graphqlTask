@@ -7,7 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { Box, Pagination } from "@mui/material"
+import { Box, Button, Pagination } from "@mui/material"
 import { IChangeEvent, IListPayload } from "../interface"
 import { Filters, Loader, SearchBar, ShowPerPage, TableStyle } from "../assets/style"
 import arrowDown from "../assets/img/arrowDown.svg"
@@ -25,16 +25,24 @@ interface ITableState {
   search: string
   perPage: number
   page: number
+  type: string
+  status: string
+  seasonYear: string
+}
+
+const intialState = {
+  search: "",
+  perPage: 10,
+  page: 1,
+  type: "",
+  status: "",
+  seasonYear: "",
 }
 
 export default function CustomTableComponent(props: ICustomTableProps) {
-  const [tableState, setTableState] = useState<ITableState>({
-    search: "",
-    perPage: 10,
-    page: 1,
-  })
+  const [tableState, setTableState] = useState<ITableState>(intialState)
   const { data, columns, loadList, totalItemCount, loader } = props
-  const { search, perPage, page } = tableState
+  const { search, perPage, page, type, status, seasonYear } = tableState
   const [sorting, setSorting] = useState<SortingState>([])
 
   const headers = useMemo<ColumnDef<any>[]>(() => columns, [])
@@ -70,16 +78,20 @@ export default function CustomTableComponent(props: ICustomTableProps) {
     const timer = setTimeout(() => {
       const clonePayload = JSON.parse(JSON.stringify(tableState))
 
-      if (search.length === 0) {
-        delete clonePayload.search
-      }
+      Object.keys(clonePayload).forEach((key: string) => {
+        if (clonePayload[key].length === 0) {
+          delete clonePayload[key]
+        }
+      })
 
       loadList(clonePayload)
     }, 250)
 
     return () => clearTimeout(timer)
-  }, [search, perPage, page])
-  
+  }, [search, perPage, page, type, status, seasonYear])
+
+  const yearList = Array.from({ length: 125 }, (_, i) => 1900 + i)
+
   return (
     <>
       <Box
@@ -104,6 +116,55 @@ export default function CustomTableComponent(props: ICustomTableProps) {
           per page
         </ShowPerPage>
         <Filters>
+          <div className="general_filters">
+            {Object.values(tableState).some((s: string) => s.length > 0) && (
+              <Button variant="contained" size="small" onClick={() => setTableState(intialState)}>
+                Clear Filter
+              </Button>
+            )}
+
+            <select name="seasonYear" value={seasonYear} onChange={changeHandler}>
+              <option value="" defaultChecked>
+                --Select Year---
+              </option>
+              {yearList.map((item: number, i: number) => {
+                return (
+                  <option value={item} key={i}>
+                    {item}
+                  </option>
+                )
+              })}
+            </select>
+
+            <select name="status" value={status} onChange={changeHandler}>
+              <option value="" defaultChecked>
+                --Select Status---
+              </option>
+              {["FINISHED", "RELEASING", "NOT_YET_RELEASED", "CANCELLED", "HIATUS"].map(
+                (item: string, i: number) => {
+                  return (
+                    <option value={item} key={i}>
+                      {item}
+                    </option>
+                  )
+                }
+              )}
+            </select>
+
+            <select name="type" value={type} onChange={changeHandler}>
+              <option value="" defaultChecked>
+                --Select Type---
+              </option>
+              {["ANIME", "MANGA"].map((item: string, i: number) => {
+                return (
+                  <option value={item} key={i}>
+                    {item}
+                  </option>
+                )
+              })}
+            </select>
+          </div>
+
           <SearchBar>
             <input type="text" placeholder="Search..." name="search" value={search} onChange={changeHandler} />
           </SearchBar>

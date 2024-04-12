@@ -193,7 +193,26 @@ export const TableStyle = styled.div`
 export const Filters = styled.div`
   display: flex;
   align-items: center;
-  select, input {
+  .general_filters {
+    display: flex;
+    align-items: flex-start;
+    .MuiButtonBase-root {
+      text-transform: capitalize;
+      white-space: nowrap;
+      min-width: 90px;
+    }
+  }
+  select,
+  input {
     margin-bottom: 15px;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
+    flex-direction: column-reverse;
+    .general_filters {
+      width: 100%;
+      overflow-x: auto;
+    }
   }
 `

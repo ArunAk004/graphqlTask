@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client"
 
 export const GET_ALL_MEDIA = gql`
-  query ($id: Int, $page: Int, $perPage: Int, $search: String) {
+  query ($id: Int, $page: Int, $perPage: Int, $search: String, $type: MediaType, $status: MediaStatus, $seasonYear: Int) {
     Page(page: $page, perPage: $perPage) {
       pageInfo {
         total
@@ -11,7 +11,7 @@ export const GET_ALL_MEDIA = gql`
         perPage
       }
 
-      media(id: $id, search: $search) {
+      media(id: $id, search: $search, type: $type, status: $status, seasonYear:$seasonYear) {
         id
         title {
           userPreferred
